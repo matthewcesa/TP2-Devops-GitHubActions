@@ -68,5 +68,5 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: ./http-server                                         #chemin relatif ou se trouve le dockerfile
-          tags: ${{secret.DOCKER_USERNAME}}/tp-devops-http-server:latest #name that will be posted on dockerHUb
+          tags: ${{secrets.DOCKER_USERNAME}}/tp-devops-http-server:latest #name that will be posted on dockerHUb
           push: ${{ github.ref == 'refs/heads/main' }}                   # si c'est false alors l'image est build mais n'est aps envoyé sur dockerhub
