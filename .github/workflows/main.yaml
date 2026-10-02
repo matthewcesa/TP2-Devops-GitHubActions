@@ -19,7 +19,7 @@ jobs:
         # ce que j'ai fait
         uses: actions/setup-java@v4
         with:
-          distribution: amazoncorretto
+          distribution: 'amazoncorretto'
           java-version: 21
 
 
