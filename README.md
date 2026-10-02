@@ -11,4 +11,13 @@ Support PostgreSQL (postgresql) : Fournit un conteneur préconfiguré avec l'ima
 Concrètement, ils permettend d'exécuter les test d'intégrations sur une vraie bdd postgreSQL temporaire, identitique à celle créé, puis de tout effacer une fois les test finis.
 
 
+## **2-2 Dans quel but avons-nous besoin d'utiliser des variables sécurisées ?**
+Similaire à un .env mais plus focus cloud et pipelines automatisés. Protège les identifiants et les clés d'accés pour éviter que les personnes ayant accés au repo puisse les voir.
+
+## **2-3 Pourquoi avons-nous spécifié « besoins : construire et tester le backend » pour cette tâche ? Essayez peut-être sans, vous verrez !**
+Pour ne pas publier du code cassé : L'image Docker est envoyée sur Docker Hub seulement si les tests passent au vert.
+Si on l'enlève : Les deux jobs se lancent en même temps. Tu risques de pousser une application buggée sur Docker Hub même si les tests échouent.
+
+## **2-4 Dans quel but devons-nous envoyer des images Docker ?**
+
 

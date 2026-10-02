@@ -9,12 +9,12 @@ on:
 
 jobs:
   #1st job
-  test-backend:                       #identifiant du job
+  test-backend: #identifiant du job
     runs-on: ubuntu-24.04             #demarre une machine virtuelle linux
     steps:
       #checkout your github code using actions/checkout@v4
       - uses: actions/checkout@v4     #permet d utiliser plugin deja existant
-                                      #clone le depot dans la machine virtuelle
+        #clone le depot dans la machine virtuelle
 
       #do the same with another action (actions/setup-java@v4) that enable to setup jdk 21
       - name: Set up JDK 21
@@ -23,7 +23,13 @@ jobs:
           distribution: 'temurin'
           java-version: 21
 
-  # define job to build and publish docker image
+
+
+      #finally build your app with the latest command
+      - name: Build and test with Maven
+        run: mvn verify clean --file simple-api/pom.xml #sert a executer dans le bash
+
+  # 2nd job - define job to build and publish docker image
   build-and-push-docker-image:
     needs: test-backend
     # run only when code is compiling and tests are passing
@@ -34,24 +40,33 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Login to DockerHub
+        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login --username ${{ secrets.DOCKER_USERNAME }} --password-stdin
+
+
       - name: Build image and push backend
         uses: docker/build-push-action@v6
         with:
           # relative path to the place where source code with Dockerfile is located
-          context:
+          context: ./simple-api                                             #chemin relatif ou se trouve le dockerfile
           # Note: tags has to be all lower-case
-          tags: ${{secrets.DOCKERHUB_USERNAME}}/tp-devops-simple-api:latest
+          tags: ${{secrets.DOCKERHUB_USERNAME}}/tp-devops-simple-api:latest #name that will be posted on dockerHUb
+          # build on feature branches, push only on main branch
+          push: ${{ github.ref == 'refs/heads/main' }}                      # si c'est false alors l'image est build mais n'est aps envoyé sur dockerhub
+
 
       - name: Build image and push database
         # DO the same for database
+        uses: docker/build-push-action@v6
+        with:
+          context: ./database                                           #chemin relatif ou se trouve le dockerfile
+          tags: ${{secrets.DOCKER_USERNAME}}/tp-devops-database:latest  #name that will be posted on dockerHUb
+          push: ${{ github.ref == 'refs/heads/main' }}                  # si c'est false alors l'image est build mais n'est aps envoyé sur dockerhub
 
       - name: Build image and push httpd
         # DO the same for httpd
-
-
-
-      #finally build your app with the latest command
-      - name: Build and test with Maven
-        run: mvn verify clean --file simple-api/pom.xml #sert a executer dans le bash
-
-
+        uses: docker/build-push-action@v6
+        with:
+          context: ./http-server                                         #chemin relatif ou se trouve le dockerfile
+          tags: ${{secret.DOCKER_USERNAME}}/tp-devops-http-server:latest #name that will be posted on dockerHUb
+          push: ${{ github.ref == 'refs/heads/main' }}                   # si c'est false alors l'image est build mais n'est aps envoyé sur dockerhub
