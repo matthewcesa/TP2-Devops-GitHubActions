@@ -1,15 +1,15 @@
-name: CI devops 2025
+name: CI devops 2026
 on:
   #to begin you want to launch this job in main and develop
   push:
-    branches: #TODO
+    branches:
       - main
       - develop
   pull_request:                       #se lance aussi quand il y a pull request pour les branche main et develop
 
 jobs:
   #1st job
-  test-backend: #identifiant du job
+  test-backend:                       #identifiant du job
     runs-on: ubuntu-24.04             #demarre une machine virtuelle linux
     steps:
       #checkout your github code using actions/checkout@v4
@@ -18,12 +18,10 @@ jobs:
 
       #do the same with another action (actions/setup-java@v4) that enable to setup jdk 21
       - name: Set up JDK 21
-        uses: actions/setup-java@v4   #installe le kit de developpement java sur la machine irtuelle
+        uses: actions/setup-java@v4   # instllale le kit de developpement java sur la machine irtuelle
         with:
           distribution: 'temurin'
           java-version: 21
-
-
 
       #finally build your app with the latest command
       - name: Build and test with Maven
@@ -69,4 +67,13 @@ jobs:
         with:
           context: ./http-server                                         #chemin relatif ou se trouve le dockerfile
           tags: ${{secrets.DOCKER_USERNAME}}/tp-devops-http-server:latest #name that will be posted on dockerHUb
-          push: ${{ github.ref == 'refs/heads/main' }}                   # si c'est false alors l'image est build mais n'est aps envoyé sur dockerhub
+          push: ${{ github.ref == 'refs/heads/main' }}   # si c'est false alors l'image est build mais n'est aps envoyé sur dockerhub
+
+      - name: Run SonaCloud Analysis
+
+        run: mvn -B verify sonar:sonar \
+              -Dsonar.projectKey=matthewcesa_TP2-Devops-GitHubActions \
+              -Dsonar.organization=matthewcesa \
+              -Dsonar.host.url=https://sonarcloud.io \
+              -Dsonar.login=${{ secrets.SONAR_TOKEN }}  \
+              --file ./simple-api/pom.xml
