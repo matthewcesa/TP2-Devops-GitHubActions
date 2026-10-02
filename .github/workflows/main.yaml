@@ -28,11 +28,7 @@ jobs:
         run: mvn verify clean --file simple-api/pom.xml #sert a executer dans le bash
 
       - name: Run SonaCloud Analysis
-        run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
-          -Dsonar.projectKey=matthewcesa_TP2-Devops-GitHubActions \
-          -Dsonar.organization=matthewcesa \
-          -Dsonar.host.url=https://sonarcloud.io \
-          -Dsonar.login=${{ secrets.SONAR_TOKEN }} --file simple-api/pom.xml
+        run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=matthewcesa_TP2-Devops-GitHubActions -Dsonar.organization=matthewcesa -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=${{ secrets.SONAR_TOKEN }} --file simple-api/pom.xml
 
 
   # 2nd job - define job to build and publish docker image
