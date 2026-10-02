@@ -3,6 +3,8 @@ on:
   #to begin you want to launch this job in main and develop
   push:
     branches: #TODO
+      - main
+      - develop
   pull_request:
 
 jobs:
@@ -14,8 +16,15 @@ jobs:
 
       #do the same with another action (actions/setup-java@v4) that enable to setup jdk 21
       - name: Set up JDK 21
-        #TODO
+        # ce que j'ai fait
+        uses: actions/setup-java@4
+        with:
+          java-version: 21
+
+
 
       #finally build your app with the latest command
       - name: Build and test with Maven
-        run: #TODO
+        run: mvn verify clean --file simple-api/pom.xml #f run sert a aire nouvelle commande
+
+
