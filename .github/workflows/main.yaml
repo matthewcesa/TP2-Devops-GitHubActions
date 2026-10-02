@@ -5,27 +5,53 @@ on:
     branches: #TODO
       - main
       - develop
-  pull_request:
+  pull_request:                       #se lance aussi quand il y a pull request pour les branche main et develop
 
 jobs:
-  test-backend:
-    runs-on: ubuntu-24.04
+  #1st job
+  test-backend:                       #identifiant du job
+    runs-on: ubuntu-24.04             #demarre une machine virtuelle linux
     steps:
       #checkout your github code using actions/checkout@v4
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4     #permet d utiliser plugin deja existant
+                                      #clone le depot dans la machine virtuelle
 
       #do the same with another action (actions/setup-java@v4) that enable to setup jdk 21
       - name: Set up JDK 21
-        # ce que j'ai fait
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v4   #installe le kit de developpement java sur la machine irtuelle
         with:
           distribution: 'temurin'
           java-version: 21
+
+  # define job to build and publish docker image
+  build-and-push-docker-image:
+    needs: test-backend
+    # run only when code is compiling and tests are passing
+    runs-on: ubuntu-24.04
+
+    # steps to perform in job
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Build image and push backend
+        uses: docker/build-push-action@v6
+        with:
+          # relative path to the place where source code with Dockerfile is located
+          context:
+          # Note: tags has to be all lower-case
+          tags: ${{secrets.DOCKERHUB_USERNAME}}/tp-devops-simple-api:latest
+
+      - name: Build image and push database
+        # DO the same for database
+
+      - name: Build image and push httpd
+        # DO the same for httpd
 
 
 
       #finally build your app with the latest command
       - name: Build and test with Maven
-        run: mvn verify clean --file simple-api/pom.xml #f run sert a aire nouvelle commande
+        run: mvn verify clean --file simple-api/pom.xml #sert a executer dans le bash
 
 
