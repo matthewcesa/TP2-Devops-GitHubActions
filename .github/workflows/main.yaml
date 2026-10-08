@@ -30,6 +30,13 @@ jobs:
       - name: Run SonaCloud Analysis
         run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=matthewcesa_TP2-Devops-GitHubActions -Dsonar.organization=matthewcesa -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=${{ secrets.SONAR_TOKEN }} --file simple-api/pom.xml
 
+      - name: Check Sonar Token
+        run: |
+          if [ -z "${{ secrets.SONAR_TOKEN }}" ]; then
+            echo "Le secret SONAR_TOKEN est vide !"
+          else
+            echo "Le secret est bien présent."
+          fi
 
   # 2nd job - define job to build and publish docker image
   build-and-push-docker-image:
