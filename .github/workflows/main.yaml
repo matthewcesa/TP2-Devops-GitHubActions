@@ -73,3 +73,5 @@ jobs:
           tags: ${{secrets.DOCKER_USERNAME}}/tp-devops-http-server:latest #name that will be posted on dockerHUb
           push: ${{ github.ref == 'refs/heads/main' }}   # si c'est false alors l'image est build mais n'est aps envoyé sur dockerhub
 
+
+#test
