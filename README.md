@@ -76,7 +76,7 @@ L'application HTTP est exposée sur le port 80. Pour arreter ces services :
 docker compose down
 ```
 
-Pour supprimer en plus le volume de données PostgreSQL (et donc les données persistées) :
+Pour supprimer en plus le volume de données PostgreSQL  (et donc les données persistées) :
 
 ```bash
 docker compose down -v
@@ -97,3 +97,4 @@ Autres commandes disponibles depuis `front/` :
 npm run build
 npm run lint
 ```
+  
